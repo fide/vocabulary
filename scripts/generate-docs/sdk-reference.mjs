@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -9,7 +9,10 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(SCRIPT_DIR, "..", "..");
 const REPO_ROOT = resolve(PACKAGE_ROOT, "..", "..");
 const SDK_ENTRY = resolve(PACKAGE_ROOT, "sdk/javascript/src/index.ts");
+const DOCS_SDK_OUT = resolve(PACKAGE_ROOT, "docs/sdk");
 const DOCS_OUT = resolve(PACKAGE_ROOT, "docs/sdk/javascript");
+const DOCS_SDK_META = resolve(DOCS_SDK_OUT, "meta.json");
+const DOCS_META = resolve(DOCS_OUT, "meta.json");
 const FUNCTION_DESCRIPTIONS = {
   getFideEntityTypeSpecByName: "Look up the definition for a single Fide entity type by name.",
   getFideEntityTypeSpecByCode: "Look up the definition for a single Fide entity type by hexadecimal code.",
@@ -26,6 +29,40 @@ function run(command, args) {
   if (result.status !== 0) {
     process.exit(result.status ?? 1);
   }
+}
+
+async function writeParentMeta() {
+  await mkdir(DOCS_SDK_OUT, { recursive: true });
+  await writeFile(
+    DOCS_SDK_META,
+    `${JSON.stringify(
+      {
+        title: "SDK",
+        pages: ["javascript"],
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
+}
+
+async function rewriteIndexPage() {
+  const indexPath = resolve(DOCS_OUT, "index.mdx");
+  const source = await readFile(indexPath, "utf8");
+  const updated = source.replace(/\]\(\.\/([^)]+)\)/g, "](./javascript/$1)");
+
+  if (updated !== source) {
+    await writeFile(indexPath, updated, "utf8");
+  }
+}
+
+async function rewriteMeta() {
+  const source = await readFile(DOCS_META, "utf8");
+  const data = JSON.parse(source);
+  delete data.defaultOpen;
+  data.root = true;
+  await writeFile(DOCS_META, `${JSON.stringify(data, null, 2)}\n`, "utf8");
 }
 
 async function injectPackageName() {
@@ -66,6 +103,8 @@ async function injectPackageName() {
   }
 }
 
+await rm(DOCS_OUT, { recursive: true, force: true });
+
 run("pnpm", [
   "exec",
   "lally",
@@ -93,3 +132,6 @@ run("pnpm", [
 ]);
 
 await injectPackageName();
+await rewriteIndexPage();
+await rewriteMeta();
+await writeParentMeta();
