@@ -50,7 +50,7 @@ The JavaScript SDK package lives in:
 
 Current package name:
 
-- `@fide-work/vocabulary`
+- [`@fide-work/vocabulary`](https://www.npmjs.com/package/@fide-work/vocabulary)
 
 The SDK exports typed access to the vocabulary registry and helper lookup functions.
 

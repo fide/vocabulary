@@ -3,7 +3,7 @@
  * Do not edit directly; regenerate from the vocabulary source of truth.
  */
 export const FIDE_VOCABULARY = {
-  namespaceUrl: "https://fide.work/spec/v0/",
+  namespaceUrl: "https://fide.work/vocabulary/v0/",
   specVersion: "0",
   specDate: "2026-02-18",
   entityTypes: {

@@ -10,6 +10,8 @@ During alpha, the normative editable source of truth is:
 
 Changes to the vocabulary should be made there first.
 
+The `namespaceUrl` field in that file defines the canonical identifier namespace for vocabulary terms. During `v0`, that namespace is `https://fide.work/vocabulary/v0/`, so a term such as `Person` is identified as `https://fide.work/vocabulary/v0/Person`.
+
 ## Alpha Versioning Policy
 
 - `spec/v0/` is the mutable alpha line.

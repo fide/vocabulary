@@ -1,4 +1,39 @@
 ---
 title: Quickstart
-description: Q
+description: Install the SDK and look up Fide entity type definitions.
 ---
+
+The fastest way to work with the Fide Vocabulary is through the JavaScript SDK.
+
+## Install
+
+```bash
+pnpm add @fide-work/vocabulary
+```
+
+## Look Up An Entity Type
+
+```ts
+import { getFideEntityTypeSpecByName } from "@fide-work/vocabulary";
+
+const person = getFideEntityTypeSpecByName("Person");
+
+console.log(person.code);
+console.log(person.description);
+```
+
+## List All Entity Types
+
+```ts
+import { listFideEntityTypes } from "@fide-work/vocabulary";
+
+const entityTypes = listFideEntityTypes();
+
+console.log(entityTypes.length);
+console.log(entityTypes.map((entityType) => entityType.name));
+```
+
+## Next Steps
+
+- Browse the [Definitions](/vocabulary/definitions) pages for the canonical entity type registry.
+- Use the [JavaScript SDK Reference](/vocabulary/sdk/javascript) for the full API surface.
