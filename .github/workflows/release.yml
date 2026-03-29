@@ -1,9 +1,9 @@
-name: Release Fiden Entity Vocabulary
+name: Release Fide Entity Vocabulary
 
 on:
   push:
     tags:
-      - "fide-vocabulary-v*"
+      - "v*"
 
 permissions:
   contents: write
@@ -16,9 +16,9 @@ jobs:
       contents: write
       id-token: write
       deployments: write
-    uses: ChrisLally/lally-workflows/.github/workflows/release-publish.yml@main
+    uses: fide/lally-workflows/.github/workflows/release-publish.yml@main
     with:
-      tag_prefix: "fide-vocabulary-v"
+      tag_prefix: "v"
       install_working_directory: "sdk/javascript"
       package_dir: "sdk/javascript"
-      deployment_environment: "Preview - fide-vocabulary"
+      deployment_environment: "Preview - vocabulary"
