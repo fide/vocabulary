@@ -50,7 +50,7 @@ The JavaScript SDK package lives in:
 
 Current package name:
 
-- `@chris-test/fide-vocabulary`
+- `@fide-work/vocabulary`
 
 The SDK exports typed access to the vocabulary registry and helper lookup functions.
 

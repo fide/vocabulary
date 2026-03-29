@@ -78,7 +78,7 @@ async function injectPackageName() {
         /<SDKFunctionPageInteractive data=\{(\{[\s\S]*\})\} \/>/,
         (_match, json) => {
           const data = JSON.parse(json);
-          data.packageName = "@chris-test/fide-vocabulary";
+          data.packageName = "@fide-work/vocabulary";
           const description = FUNCTION_DESCRIPTIONS[data.name];
           if (description) {
             data.description = description;
@@ -118,7 +118,7 @@ run("pnpm", [
   "--out",
   DOCS_OUT,
   "--package-name",
-  "@chris-test/fide-vocabulary",
+  "@fide-work/vocabulary",
   "--title",
   "SDK",
   "--section-overrides",

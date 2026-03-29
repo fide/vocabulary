@@ -1,8 +1,11 @@
-# `@chris-test/fide-vocabulary`
+# `@fide-work/vocabulary`
 
 JavaScript/TypeScript SDK for the Fide Vocabulary.
 
 This package provides typed access to the current Fide Vocabulary spec and helper functions for working with Fide entity type definitions.
+
+- SDK docs: [fide.work/docs/vocabulary/sdk/javascript](https://fide.work/docs/vocabulary/sdk/javascript)
+- Repository: [github.com/fide/vocabulary](https://github.com/fide/vocabulary)
 
 ## Status
 
@@ -15,7 +18,7 @@ This package is in alpha.
 ## Install
 
 ```bash
-pnpm add @chris-test/fide-vocabulary
+pnpm add @fide-work/vocabulary
 ```
 
 ## Usage
@@ -26,7 +29,7 @@ import {
   getFideEntityTypeSpecByName,
   getFideEntityTypeSpecByCode,
   listFideEntityTypes,
-} from "@chris-test/fide-vocabulary";
+} from "@fide-work/vocabulary";
 
 const person = getFideEntityTypeSpecByName("Person");
 const statement = getFideEntityTypeSpecByCode("00");
@@ -55,11 +58,10 @@ console.log(allEntityTypes.length);
 
 ## Source Of Truth
 
-The exported vocabulary data is generated from the canonical spec source in:
+The exported vocabulary data is generated from the canonical spec source in the Fide Vocabulary repository.
 
-- `../../spec/v0/vocabulary.json`
-
-Do not edit generated SDK files directly.
+- Spec docs: [fide.work/docs/vocabulary](https://fide.work/docs/vocabulary)
+- Repository: [github.com/fide/vocabulary](https://github.com/fide/vocabulary)
 
 ## Development
 

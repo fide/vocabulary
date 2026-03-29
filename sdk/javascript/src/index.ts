@@ -1,5 +1,5 @@
 /**
- * @chris-test/fide-vocabulary
+ * @fide-work/vocabulary
  *
  * Typed access to the Fide Vocabulary.
  */
