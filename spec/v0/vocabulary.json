@@ -1,7 +1,7 @@
 {
   "namespaceUrl": "https://fide.work/vocabulary/v0/",
   "specVersion": "0",
-  "specDate": "2026-02-18",
+  "specDate": "2026-03-28",
   "entityTypes": {
     "Statement": {
       "code": "00",
@@ -53,7 +53,7 @@
       ],
       "standardFit": "Exact",
       "description": "A structured collective of people or agents that acts as a unit.",
-      "litmus": "Not a single person or software. Not a query-defined group (e.g. alumni by year); create only when the group itself needs to act.",
+      "litmus": "Not a single person or software. A branded initiative, product line, or program is not an Organization unless it has its own durable collective agency. Not a query-defined group.",
       "fideIdRules": {
         "allowedReferenceTypes": [
           "NetworkResource"
@@ -155,7 +155,7 @@
       ],
       "standardFit": "Close",
       "description": "An authority-based account principal (e.g., an email address or a specific GitHub, Google, or Mastodon user ID). The identity exists by the permission of a host system's database.",
-      "litmus": "Authenticated by a host authority's database, not purely by mathematics.",
+      "litmus": "Authenticated by a host authority's database. This represents the account principal itself, not the agent or agents that operate it.",
       "fideIdRules": {
         "allowedReferenceTypes": [
           "NetworkResource"
@@ -197,11 +197,12 @@
       "code": "31",
       "layer": "Knowledge",
       "standards": [
+        "skos:Concept",
         "schema:DefinedTerm"
       ],
       "standardFit": "Close",
-      "description": "A formal concept, word, topic, category, or abstract idea defined in a taxonomy.",
-      "litmus": "Not a plain raw value.",
+      "description": "A socially or formally recognized unit of meaning, such as a term, topic, category, label, initiative, or other abstract idea.",
+      "litmus": "Not a plain raw value. Use this for labels, brands, programs, or initiatives that do not have their own durable collective agency.",
       "fideIdRules": {
         "allowedReferenceTypes": [
           "NetworkResource"
@@ -259,10 +260,9 @@
       "code": "43",
       "layer": "Spacetime",
       "standards": [
-        "schema:Product",
-        "schema:Thing"
+        "dcmitype:PhysicalObject"
       ],
-      "standardFit": "Close",
+      "standardFit": "Exact",
       "description": "A tangible, inanimate physical object (e.g., hardware, vehicle, physical document, natural object). Physical only. Use Statements (madeBy, manufactured=true) if man-made vs natural matters.",
       "litmus": "Not a location (where). Not a digital artifact (use CreativeWork).",
       "fideIdRules": {

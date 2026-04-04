@@ -10,6 +10,15 @@ This specification is the canonical registry for valid entity types, valid refer
 
 Each definition combines semantic meaning, external standard alignment, and any entity-type-specific identifier constraints that apply to an entity.
 
+## Design Rule
+
+Fide entity types are stable base kinds, not contextual roles.
+
+A type should be used in a Fide ID only when it is intended to remain valid for that entity across contexts and over time.
+If something could later still validly be understood as a different base entity type, it is usually better modeled as a statement pattern, qualifier, or domain convention rather than as a new Fide entity type.
+
+This is why Fide prefers a small set of durable base types and avoids adding convenience types for application-specific roles unless they have distinct and stable identity criteria of their own.
+
 ## Use It
 
 - npm package: [@fide-work/vocabulary](https://www.npmjs.com/package/@fide-work/vocabulary)

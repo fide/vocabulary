@@ -5,7 +5,7 @@
 export const FIDE_VOCABULARY = {
   namespaceUrl: "https://fide.work/vocabulary/v0/",
   specVersion: "0",
-  specDate: "2026-02-18",
+  specDate: "2026-03-28",
   entityTypes: {
     Statement: {
       code: "00",
@@ -74,8 +74,8 @@ export const FIDE_VOCABULARY = {
     Concept: {
       code: "31",
       layer: "Knowledge",
-      standards: ["schema:DefinedTerm"] as const,
-      standardFit: "Close",
+      standards: ["skos:Concept","schema:DefinedTerm"] as const,
+      standardFit: "Exact",
       description: "A formal concept, word, topic, category, or abstract idea defined in a taxonomy.",
       litmus: "Not a plain raw value.",
     },
@@ -106,8 +106,8 @@ export const FIDE_VOCABULARY = {
     PhysicalObject: {
       code: "43",
       layer: "Spacetime",
-      standards: ["schema:Product","schema:Thing"] as const,
-      standardFit: "Close",
+      standards: ["dcmitype:PhysicalObject"] as const,
+      standardFit: "Exact",
       description: "A tangible, inanimate physical object (e.g., hardware, vehicle, physical document, natural object). Physical only. Use Statements (madeBy, manufactured=true) if man-made vs natural matters.",
       litmus: "Not a location (where). Not a digital artifact (use CreativeWork).",
     },

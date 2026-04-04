@@ -15,6 +15,7 @@ const FCP_BASE = '/fcp/specification';
 
 const STANDARD_PREFIX_IRIS = {
   schema: 'https://schema.org/',
+  dcmitype: 'http://purl.org/dc/dcmitype/',
   rdf: 'https://www.w3.org/1999/02/22-rdf-syntax-ns#',
   rdfs: 'https://www.w3.org/2000/01/rdf-schema#',
   xsd: 'https://www.w3.org/2001/XMLSchema#',
