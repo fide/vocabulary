@@ -52,8 +52,8 @@
         "org:Organization"
       ],
       "standardFit": "Exact",
-      "description": "A structured collective of people or agents that acts as a unit.",
-      "litmus": "Not a single person or software. A branded initiative, product line, or program is not an Organization unless it has its own durable collective agency. Not a query-defined group.",
+      "description": "A durable collective of people, software agents, or both that can act as a unit.",
+      "litmus": "Not a single person or software agent. Legal incorporation is not required, but a legal company is always an Organization. A branded initiative, product line, or program is usually a Concept unless it has its own durable collective agency. Not a query-defined group.",
       "fideIdRules": {
         "allowedReferenceTypes": [
           "NetworkResource"
@@ -395,26 +395,27 @@
       }
     },
     "DateLiteral": {
-      "code": "a4",
+      "code": "b1",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
         "xsd:date"
       ],
       "standardFit": "Exact",
-      "description": "A calendar date (YYYY-MM-DD formatted according to ISO 8601).",
+      "description": "A calendar date in canonical `YYYY-MM-DD` form.",
       "litmus": "Not a datetime or time.",
       "fideIdRules": {
         "referenceTypeRules": {
           "requirements": [
-            "Reference MUST use `YYYY-MM-DD` format ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#date))."
+            "Reference MUST use canonical `YYYY-MM-DD` format without timezone ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#date))."
           ],
           "ruleDetails": [
             {
-              "rule": "Date references MUST use zero-padded month and day values.",
+              "rule": "Date references MUST use a four-digit year and zero-padded month and day values.",
               "examples": [
                 "Valid Reference: `2026-03-05`",
                 "Invalid Reference: `2026-3-5`",
+                "Invalid Reference: `2026-03-05Z`",
                 "Invalid Reference: `03/05/2026`"
               ]
             }
@@ -426,8 +427,74 @@
         ]
       }
     },
+    "YearMonthLiteral": {
+      "code": "b2",
+      "layer": "Literals",
+      "standards": [
+        "rdf:Literal",
+        "xsd:gYearMonth"
+      ],
+      "standardFit": "Exact",
+      "description": "A calendar year and month in canonical `YYYY-MM` form.",
+      "litmus": "Not a full date or year alone.",
+      "fideIdRules": {
+        "referenceTypeRules": {
+          "requirements": [
+            "Reference MUST use canonical `YYYY-MM` format without timezone ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#gYearMonth))."
+          ],
+          "ruleDetails": [
+            {
+              "rule": "Year-month references MUST use a four-digit year and zero-padded month.",
+              "examples": [
+                "Valid Reference: `2026-03`",
+                "Invalid Reference: `2026-3`",
+                "Invalid Reference: `2026-03Z`",
+                "Invalid Reference: `03/2026`"
+              ]
+            }
+          ]
+        },
+        "allowedReferenceTypes": [
+          "YearMonthLiteral",
+          "NetworkResource"
+        ]
+      }
+    },
+    "YearLiteral": {
+      "code": "b3",
+      "layer": "Literals",
+      "standards": [
+        "rdf:Literal",
+        "xsd:gYear"
+      ],
+      "standardFit": "Exact",
+      "description": "A calendar year in canonical `YYYY` form.",
+      "litmus": "Not a year-month or full date.",
+      "fideIdRules": {
+        "referenceTypeRules": {
+          "requirements": [
+            "Reference MUST use canonical `YYYY` format without timezone ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#gYear))."
+          ],
+          "ruleDetails": [
+            {
+              "rule": "Year references MUST use a four-digit year value.",
+              "examples": [
+                "Valid Reference: `2026`",
+                "Invalid Reference: `26`",
+                "Invalid Reference: `2026Z`",
+                "Invalid Reference: `2026-03`"
+              ]
+            }
+          ]
+        },
+        "allowedReferenceTypes": [
+          "YearLiteral",
+          "NetworkResource"
+        ]
+      }
+    },
     "TimeLiteral": {
-      "code": "a5",
+      "code": "b4",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
@@ -459,19 +526,19 @@
       }
     },
     "DateTimeLiteral": {
-      "code": "a6",
+      "code": "b0",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
         "xsd:dateTime"
       ],
       "standardFit": "Exact",
-      "description": "A specific point in time (ISO 8601 formatted, UTC normalized).",
+      "description": "A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form.",
       "litmus": "Not a date or time alone.",
       "fideIdRules": {
         "referenceTypeRules": {
           "requirements": [
-            "Reference MUST use UTC datetime format with a trailing `Z` ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#dateTime))."
+            "Reference MUST use canonical UTC datetime format with a trailing `Z` ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#dateTime))."
           ],
           "ruleDetails": [
             {
@@ -491,7 +558,7 @@
       }
     },
     "DurationLiteral": {
-      "code": "a7",
+      "code": "b5",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
@@ -524,7 +591,7 @@
       }
     },
     "URILiteral": {
-      "code": "a8",
+      "code": "c0",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
@@ -561,7 +628,7 @@
       }
     },
     "JSONLiteral": {
-      "code": "a9",
+      "code": "c1",
       "layer": "Literals",
       "standards": [
         "rdf:Literal",
