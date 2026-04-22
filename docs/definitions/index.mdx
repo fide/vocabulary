@@ -9,7 +9,9 @@ Entity types that define the structure of the graph itself.
 
 | Entity | Code | Definition | Boundaries |
 | :--- | :--- | :--- | :--- |
-| [`Statement`](/vocabulary/definitions/statement) | `00` | A record of a Subject-Predicate-Object assertion. | Not a verified fact; verification is application-level. Not what it represents. |
+| [`Statement`](/vocabulary/definitions/statement) | `00` | A record of a subject-property-object assertion. | Not a verified fact; verification is application-level. Not what it represents. |
+| [`DirectionalProperty`](/vocabulary/definitions/directional-property) | `01` | A property where the ordered pair (subject, object) is semantically significant. | Use when reversing subject and object changes the meaning and produces a different Statement identity. |
+| [`SymmetricProperty`](/vocabulary/definitions/symmetric-property) | `02` | A property where subject-object order is semantically interchangeable. Reversing subject and object preserves meaning and MUST resolve to the same canonical Statement identity. | Use when `A -> p -> B` means the same thing as `B -> p -> A`, such as identity or mutual-peer relations. |
 
 ### Agents
 
@@ -18,7 +20,7 @@ Entities with agency - they make decisions, take actions, and bear responsibilit
 | Entity | Code | Definition | Boundaries |
 | :--- | :--- | :--- | :--- |
 | [`Person`](/vocabulary/definitions/person) | `10` | A person (alive, dead, undead, or fictional). | Not an account or organization. |
-| [`Organization`](/vocabulary/definitions/organization) | `11` | A structured collective of people or agents that acts as a unit. | Not a single person or software. Not a query-defined group (e.g. alumni by year); create only when the group itself needs to act. |
+| [`Organization`](/vocabulary/definitions/organization) | `11` | A durable collective of people, software agents, or both that can act as a unit. | Not a single person or software agent. Legal incorporation is not required, but a legal company is always an Organization. A branded initiative, product line, or program is usually a Concept unless it has its own durable collective agency. Not a query-defined group. |
 | [`SoftwareAgent`](/vocabulary/definitions/software-agent) | `12` | A running process that acts as an independent actor: bot, AI agent, smart contract. Can hold keys and sign. | Not a person or organization. Not static passive code (use CreativeWork for repos, images, logic). |
 
 ### Network Anchors
@@ -28,7 +30,7 @@ Network addresses where evidence lives: resolvable locations, platform handles, 
 | Entity | Code | Definition | Boundaries |
 | :--- | :--- | :--- | :--- |
 | [`NetworkResource`](/vocabulary/definitions/network-resource) | `20` | A resource identified primarily by addressability or resolution, such as a URL, URI, or CID. | Not a subset or account. Not an inhabitable spatial context (use Place). |
-| [`PlatformAccount`](/vocabulary/definitions/platform-account) | `21` | An authority-based account principal (e.g., an email address or a specific GitHub, Google, or Mastodon user ID). The identity exists by the permission of a host system's database. | Authenticated by a host authority's database, not purely by mathematics. |
+| [`PlatformAccount`](/vocabulary/definitions/platform-account) | `21` | An authority-based account principal (e.g., an email address or a specific GitHub, Google, or Mastodon user ID). The identity exists by the permission of a host system's database. | Authenticated by a host authority's database. This represents the account principal itself, not the agent or agents that operate it. |
 | [`CryptographicAccount`](/vocabulary/definitions/cryptographic-account) | `22` | A math-based account principal (e.g., an EVM address, Bitcoin wallet, or did:key). The identity exists mathematically and is authenticated via mathematical signature keys. | Authenticated via mathematical signature keys, independent of a host authority. |
 
 ### Knowledge
@@ -38,7 +40,7 @@ Things that represent intellectual property, abstract ideas, or data structures.
 | Entity | Code | Definition | Boundaries |
 | :--- | :--- | :--- | :--- |
 | [`CreativeWork`](/vocabulary/definitions/creative-work) | `30` | The most generic kind of creative work, including books, movies, photographs, software programs, etc. Non-expressive digital artifacts (binaries, model weights, dataset snapshots) are CreativeWork with refinement via Statements (artifactKind, mediaType, generatedBy, derivedFrom). | Not a raw value or formal concept. Not a running agent instance (use SoftwareAgent). Not a resource where location is primary identifier (use NetworkResource). |
-| [`Concept`](/vocabulary/definitions/concept) | `31` | A formal concept, word, topic, category, or abstract idea defined in a taxonomy. | Not a plain raw value. |
+| [`Concept`](/vocabulary/definitions/concept) | `31` | A socially or formally recognized unit of meaning, such as a term, topic, category, label, initiative, or other abstract idea. | Not a plain raw value. Use this for labels, brands, programs, or initiatives that do not have their own durable collective agency. |
 
 ### Spacetime
 
@@ -61,11 +63,13 @@ Typed scalar literals represented as first-class addressed values.
 | [`IntegerLiteral`](/vocabulary/definitions/integer-literal) | `a1` | A whole number. | Not a decimal or string. |
 | [`DecimalLiteral`](/vocabulary/definitions/decimal-literal) | `a2` | A decimal or floating-point number. | Not an integer. |
 | [`BoolLiteral`](/vocabulary/definitions/bool-literal) | `a3` | A true or false value. | Not a number or string. |
-| [`DateLiteral`](/vocabulary/definitions/date-literal) | `a4` | A calendar date (YYYY-MM-DD formatted according to ISO 8601). | Not a datetime or time. |
-| [`TimeLiteral`](/vocabulary/definitions/time-literal) | `a5` | A time of day (formatted according to ISO 8601, represented in UTC). | Not a date or datetime. |
-| [`DateTimeLiteral`](/vocabulary/definitions/date-time-literal) | `a6` | A specific point in time (ISO 8601 formatted, UTC normalized). | Not a date or time alone. |
-| [`DurationLiteral`](/vocabulary/definitions/duration-literal) | `a7` | A calculated amount of elapsed time (ISO 8601 duration format). | Not a datetime. |
-| [`URILiteral`](/vocabulary/definitions/uri-literal) | `a8` | A formalized Uniform Resource Identifier string. | Not plain text. |
-| [`JSONLiteral`](/vocabulary/definitions/json-literal) | `a9` | A structured JSON object represented in canonical string form. | Not a string. |
+| [`DateTimeLiteral`](/vocabulary/definitions/date-time-literal) | `b0` | A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form. | Not a date or time alone. |
+| [`DateLiteral`](/vocabulary/definitions/date-literal) | `b1` | A calendar date in canonical `YYYY-MM-DD` form. | Not a datetime or time. |
+| [`YearMonthLiteral`](/vocabulary/definitions/year-month-literal) | `b2` | A calendar year and month in canonical `YYYY-MM` form. | Not a full date or year alone. |
+| [`YearLiteral`](/vocabulary/definitions/year-literal) | `b3` | A calendar year in canonical `YYYY` form. | Not a year-month or full date. |
+| [`TimeLiteral`](/vocabulary/definitions/time-literal) | `b4` | A time of day (formatted according to ISO 8601, represented in UTC). | Not a date or datetime. |
+| [`DurationLiteral`](/vocabulary/definitions/duration-literal) | `b5` | A calculated amount of elapsed time (ISO 8601 duration format). | Not a datetime. |
+| [`URILiteral`](/vocabulary/definitions/uri-literal) | `c0` | A formalized Uniform Resource Identifier string. | Not plain text. |
+| [`JSONLiteral`](/vocabulary/definitions/json-literal) | `c1` | A structured JSON object represented in canonical string form. | Not a string. |
 
 

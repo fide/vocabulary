@@ -2,25 +2,38 @@
   "namespaceUrl": "https://fide.work/vocabulary/v0/",
   "specVersion": "0",
   "specDate": "2026-03-28",
+  "enums": {
+    "FitValue": {
+      "type": "string",
+      "enum": [
+        "Exact",
+        "Close",
+        "Broad"
+      ],
+      "description": "Describes the semantic fit between a Fide entity type and an external standard."
+    }
+  },
   "entityTypes": {
     "Statement": {
       "code": "00",
       "layer": "Graph Structure",
       "standards": [
-        "rdf:Statement"
+        {
+          "term": "rdf:Statement",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
-      "description": "A record of a Subject-Predicate-Object assertion.",
+      "description": "A record of a subject-property-object assertion.",
       "litmus": "Not a verified fact; verification is application-level. Not what it represents.",
       "fideIdRules": {
         "referenceTypeRules": {
           "ruleDetails": [
             {
-              "rule": "Reference MUST use `subjectFideId|predicateFideId|objectFideId` in that order.",
+              "rule": "Reference MUST use `subjectFideId|propertyFideId|objectFideId`, where the middle slot MUST reference a Property entity, in that order.",
               "examples": [
                 "Valid Reference: `did:fide:0x10205fcbdc6d73bcfcd2c73eb4795c2f02f1d1c1|did:fide:0x3120580f7f68f7884e6be0603679f41b39d6d15b|did:fide:0xa0a0ba86d94f45ed925f5a31934b31c3d12c268a`",
                 "Invalid Reference: `did:fide:0x10205fcbdc6d73bcfcd2c73eb4795c2f02f1d1c1|did:fide:0x3120580f7f68f7884e6be0603679f41b39d6d15b`",
-                "Invalid Reference: `subject|predicate|object`"
+                "Invalid Reference: `subject|property|object`"
               ]
             }
           ]
@@ -30,13 +43,53 @@
         ]
       }
     },
+    "DirectionalProperty": {
+      "code": "01",
+      "layer": "Graph Structure",
+      "standards": [
+        {
+          "term": "rdf:Property",
+          "fit": "Close"
+        }
+      ],
+      "description": "A property where the ordered pair (subject, object) is semantically significant.",
+      "litmus": "Use when reversing subject and object changes the meaning and produces a different Statement identity.",
+      "fideIdRules": {
+        "allowedReferenceTypes": [
+          "NetworkResource"
+        ]
+      }
+    },
+    "SymmetricProperty": {
+      "code": "02",
+      "layer": "Graph Structure",
+      "standards": [
+        {
+          "term": "rdf:Property",
+          "fit": "Close"
+        },
+        {
+          "term": "owl:SymmetricProperty",
+          "fit": "Close"
+        }
+      ],
+      "description": "A property where subject-object order is semantically interchangeable. Reversing subject and object preserves meaning and MUST resolve to the same canonical Statement identity.",
+      "litmus": "Use when `A -> p -> B` means the same thing as `B -> p -> A`, such as identity or mutual-peer relations.",
+      "fideIdRules": {
+        "allowedReferenceTypes": [
+          "NetworkResource"
+        ]
+      }
+    },
     "Person": {
       "code": "10",
       "layer": "Agents",
       "standards": [
-        "schema:Person"
+        {
+          "term": "schema:Person",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A person (alive, dead, undead, or fictional).",
       "litmus": "Not an account or organization.",
       "fideIdRules": {
@@ -49,9 +102,11 @@
       "code": "11",
       "layer": "Agents",
       "standards": [
-        "org:Organization"
+        {
+          "term": "org:Organization",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A durable collective of people, software agents, or both that can act as a unit.",
       "litmus": "Not a single person or software agent. Legal incorporation is not required, but a legal company is always an Organization. A branded initiative, product line, or program is usually a Concept unless it has its own durable collective agency. Not a query-defined group.",
       "fideIdRules": {
@@ -64,10 +119,15 @@
       "code": "12",
       "layer": "Agents",
       "standards": [
-        "schema:SoftwareApplication",
-        "prov:SoftwareAgent"
+        {
+          "term": "schema:SoftwareApplication",
+          "fit": "Close"
+        },
+        {
+          "term": "prov:SoftwareAgent",
+          "fit": "Close"
+        }
       ],
-      "standardFit": "Close",
       "description": "A running process that acts as an independent actor: bot, AI agent, smart contract. Can hold keys and sign.",
       "litmus": "Not a person or organization. Not static passive code (use CreativeWork for repos, images, logic).",
       "fideIdRules": {
@@ -80,11 +140,19 @@
       "code": "20",
       "layer": "Network Anchors",
       "standards": [
-        "schema:WebPage",
-        "schema:WebSite",
-        "schema:EntryPoint"
+        {
+          "term": "schema:WebPage",
+          "fit": "Broad"
+        },
+        {
+          "term": "schema:WebSite",
+          "fit": "Broad"
+        },
+        {
+          "term": "schema:EntryPoint",
+          "fit": "Broad"
+        }
       ],
-      "standardFit": "Broad",
       "description": "A resource identified primarily by addressability or resolution, such as a URL, URI, or CID.",
       "litmus": "Not a subset or account. Not an inhabitable spatial context (use Place).",
       "fideIdRules": {
@@ -151,9 +219,11 @@
       "code": "21",
       "layer": "Network Anchors",
       "standards": [
-        "schema:OnlineAccount"
+        {
+          "term": "schema:OnlineAccount",
+          "fit": "Close"
+        }
       ],
-      "standardFit": "Close",
       "description": "An authority-based account principal (e.g., an email address or a specific GitHub, Google, or Mastodon user ID). The identity exists by the permission of a host system's database.",
       "litmus": "Authenticated by a host authority's database. This represents the account principal itself, not the agent or agents that operate it.",
       "fideIdRules": {
@@ -166,10 +236,15 @@
       "code": "22",
       "layer": "Network Anchors",
       "standards": [
-        "sec:PublicKey",
-        "sec:publicKeyMultibase"
+        {
+          "term": "sec:PublicKey",
+          "fit": "Close"
+        },
+        {
+          "term": "sec:publicKeyMultibase",
+          "fit": "Close"
+        }
       ],
-      "standardFit": "Close",
       "description": "A math-based account principal (e.g., an EVM address, Bitcoin wallet, or did:key). The identity exists mathematically and is authenticated via mathematical signature keys.",
       "litmus": "Authenticated via mathematical signature keys, independent of a host authority.",
       "fideIdRules": {
@@ -182,9 +257,11 @@
       "code": "30",
       "layer": "Knowledge",
       "standards": [
-        "schema:CreativeWork"
+        {
+          "term": "schema:CreativeWork",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "The most generic kind of creative work, including books, movies, photographs, software programs, etc. Non-expressive digital artifacts (binaries, model weights, dataset snapshots) are CreativeWork with refinement via Statements (artifactKind, mediaType, generatedBy, derivedFrom).",
       "litmus": "Not a raw value or formal concept. Not a running agent instance (use SoftwareAgent). Not a resource where location is primary identifier (use NetworkResource).",
       "fideIdRules": {
@@ -197,10 +274,15 @@
       "code": "31",
       "layer": "Knowledge",
       "standards": [
-        "skos:Concept",
-        "schema:DefinedTerm"
+        {
+          "term": "skos:Concept",
+          "fit": "Close"
+        },
+        {
+          "term": "schema:DefinedTerm",
+          "fit": "Close"
+        }
       ],
-      "standardFit": "Close",
       "description": "A socially or formally recognized unit of meaning, such as a term, topic, category, label, initiative, or other abstract idea.",
       "litmus": "Not a plain raw value. Use this for labels, brands, programs, or initiatives that do not have their own durable collective agency.",
       "fideIdRules": {
@@ -213,10 +295,15 @@
       "code": "40",
       "layer": "Spacetime",
       "standards": [
-        "schema:Place",
-        "schema:VirtualLocation"
+        {
+          "term": "schema:Place",
+          "fit": "Broad"
+        },
+        {
+          "term": "schema:VirtualLocation",
+          "fit": "Broad"
+        }
       ],
-      "standardFit": "Broad",
       "description": "A spatial context that can contain presence, co-location, and interaction. Includes physical locations and persistent virtual environments (e.g., a concert venue, a Discord server or channel, a Zoom room, a VRChat instance). Physicality/virtuality is asserted via Statements, not the base type.",
       "litmus": "Not a happening or a physical artifact. Can an Actor have presence there? Is its identity a spatial address rather than a document location or account?",
       "fideIdRules": {
@@ -229,9 +316,11 @@
       "code": "41",
       "layer": "Spacetime",
       "standards": [
-        "schema:Event"
+        {
+          "term": "schema:Event",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "An occurrence or happening bounded in time. Can be observed/aggregated; may be caused by Actions, systems, or nature. Occurs at a Place (physical or virtual).",
       "litmus": "Not a specific exertion of agency (Action).",
       "fideIdRules": {
@@ -244,10 +333,15 @@
       "code": "42",
       "layer": "Spacetime",
       "standards": [
-        "schema:Action",
-        "prov:Activity"
+        {
+          "term": "schema:Action",
+          "fit": "Close"
+        },
+        {
+          "term": "prov:Activity",
+          "fit": "Close"
+        }
       ],
-      "standardFit": "Close",
       "description": "A discrete assertion or commitment attributable to an Agent. Often produces or records a change (e.g., a transaction, API call, signature). Can be linked to Events via Statements (causes, records, resultsIn).",
       "litmus": "Not a broad temporal happening (Event); must be driven by an Agent.",
       "fideIdRules": {
@@ -260,9 +354,11 @@
       "code": "43",
       "layer": "Spacetime",
       "standards": [
-        "dcmitype:PhysicalObject"
+        {
+          "term": "dcmitype:PhysicalObject",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A tangible, inanimate physical object (e.g., hardware, vehicle, physical document, natural object). Physical only. Use Statements (madeBy, manufactured=true) if man-made vs natural matters.",
       "litmus": "Not a location (where). Not a digital artifact (use CreativeWork).",
       "fideIdRules": {
@@ -275,10 +371,15 @@
       "code": "a0",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:string"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:string",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A plain text sequence of characters.",
       "litmus": "Not a Concept.",
       "fideIdRules": {
@@ -297,10 +398,15 @@
       "code": "a1",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:integer"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:integer",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A whole number.",
       "litmus": "Not a decimal or string.",
       "fideIdRules": {
@@ -331,10 +437,15 @@
       "code": "a2",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:decimal"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:decimal",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A decimal or floating-point number.",
       "litmus": "Not an integer.",
       "fideIdRules": {
@@ -364,10 +475,15 @@
       "code": "a3",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:boolean"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:boolean",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A true or false value.",
       "litmus": "Not a number or string.",
       "fideIdRules": {
@@ -398,10 +514,15 @@
       "code": "b1",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:date"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:date",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A calendar date in canonical `YYYY-MM-DD` form.",
       "litmus": "Not a datetime or time.",
       "fideIdRules": {
@@ -431,10 +552,15 @@
       "code": "b2",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:gYearMonth"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:gYearMonth",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A calendar year and month in canonical `YYYY-MM` form.",
       "litmus": "Not a full date or year alone.",
       "fideIdRules": {
@@ -464,10 +590,15 @@
       "code": "b3",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:gYear"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:gYear",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A calendar year in canonical `YYYY` form.",
       "litmus": "Not a year-month or full date.",
       "fideIdRules": {
@@ -497,10 +628,15 @@
       "code": "b4",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:time"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:time",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A time of day (formatted according to ISO 8601, represented in UTC).",
       "litmus": "Not a date or datetime.",
       "fideIdRules": {
@@ -529,10 +665,15 @@
       "code": "b0",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:dateTime"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:dateTime",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form.",
       "litmus": "Not a date or time alone.",
       "fideIdRules": {
@@ -561,10 +702,15 @@
       "code": "b5",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:duration"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:duration",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A calculated amount of elapsed time (ISO 8601 duration format).",
       "litmus": "Not a datetime.",
       "fideIdRules": {
@@ -594,10 +740,15 @@
       "code": "c0",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "xsd:anyURI"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "xsd:anyURI",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A formalized Uniform Resource Identifier string.",
       "litmus": "Not plain text.",
       "fideIdRules": {
@@ -631,10 +782,15 @@
       "code": "c1",
       "layer": "Literals",
       "standards": [
-        "rdf:Literal",
-        "rdf:JSON"
+        {
+          "term": "rdf:Literal",
+          "fit": "Broad"
+        },
+        {
+          "term": "rdf:JSON",
+          "fit": "Exact"
+        }
       ],
-      "standardFit": "Exact",
       "description": "A structured JSON object represented in canonical string form.",
       "litmus": "Not a string.",
       "fideIdRules": {

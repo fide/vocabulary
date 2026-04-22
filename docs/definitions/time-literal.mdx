@@ -9,8 +9,8 @@ full: true
 A time of day (formatted according to ISO 8601, represented in UTC).
 
 - **Boundaries:** Not a date or datetime.
-- **Hex Code:** `a5`
-- **Standard Alignment:** [`rdf:Literal`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Literal) + [`xsd:time`](https://www.w3.org/2001/XMLSchema#time) (Exact fit)
+- **Hex Code:** `b4`
+- **Standard Alignment:** [`rdf:Literal`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Literal) (Broad) + [`xsd:time`](https://www.w3.org/2001/XMLSchema#time) (Exact)
 
 
 ---
@@ -43,6 +43,6 @@ These entity-specific constraints apply when TimeLiteral is used in [Fide ID](/f
 
 | Status | Entity Type | Reference Type | Fide ID Prefix |
 | :--- | :--- | :--- | :--- |
-| Valid | `TimeLiteral` | `TimeLiteral` | `did:fide:0xa5a5` |
-| Invalid | `TimeLiteral` | `TextLiteral` | `did:fide:0xa5a0` |
+| Valid | `TimeLiteral` | `TimeLiteral` | `did:fide:0xb4b4` |
+| Invalid | `TimeLiteral` | `TextLiteral` | `did:fide:0xb4a0` |
 

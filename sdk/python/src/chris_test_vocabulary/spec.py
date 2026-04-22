@@ -33,7 +33,7 @@ FIDE_VOCABULARY: Final[dict[str, object]] = {
             "layer": "Graph Structure",
             "standards": ('rdf:Statement',),
             "standardFit": "Exact",
-            "description": "A record of a Subject-Predicate-Object assertion.",
+            "description": "A record of a Subject-Property-Object assertion.",
             "litmus": "Not a verified fact; verification is application-level. Not what it represents.",
         },
         "Person": {

@@ -1,0 +1,36 @@
+---
+title: "DirectionalProperty"
+description: "A property where the ordered pair (subject, object) is semantically significant."
+full: true
+---
+
+## Definition
+
+A property where the ordered pair (subject, object) is semantically significant.
+
+- **Boundaries:** Use when reversing subject and object changes the meaning and produces a different Statement identity.
+- **Hex Code:** `01`
+- **Standard Alignment:** [`rdf:Property`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Property) (Close)
+
+
+---
+
+## Fide ID Rules
+
+These entity-specific constraints apply when DirectionalProperty is used in [Fide ID](/fide-id).
+
+### As Entity Type
+
+- MUST use [Reference Type](/fide-id/specification/syntax#reference-type) [`NetworkResource`](/vocabulary/definitions/network-resource).
+
+
+
+
+
+## Examples
+
+| Status | Entity Type | Reference Type | Fide ID Prefix |
+| :--- | :--- | :--- | :--- |
+| Valid | `DirectionalProperty` | `NetworkResource` | `did:fide:0x0120` |
+| Invalid | `DirectionalProperty` | `Statement` | `did:fide:0x0100` |
+

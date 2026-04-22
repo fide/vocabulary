@@ -1,0 +1,36 @@
+---
+title: "SymmetricProperty"
+description: "A property where subject-object order is semantically interchangeable. Reversing subject and object preserves meaning and MUST resolve to the same canonical Statement identity."
+full: true
+---
+
+## Definition
+
+A property where subject-object order is semantically interchangeable. Reversing subject and object preserves meaning and MUST resolve to the same canonical Statement identity.
+
+- **Boundaries:** Use when `A -> p -> B` means the same thing as `B -> p -> A`, such as identity or mutual-peer relations.
+- **Hex Code:** `02`
+- **Standard Alignment:** [`rdf:Property`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Property) (Close) + [`owl:SymmetricProperty`](https://www.w3.org/2002/07/owl#SymmetricProperty) (Close)
+
+
+---
+
+## Fide ID Rules
+
+These entity-specific constraints apply when SymmetricProperty is used in [Fide ID](/fide-id).
+
+### As Entity Type
+
+- MUST use [Reference Type](/fide-id/specification/syntax#reference-type) [`NetworkResource`](/vocabulary/definitions/network-resource).
+
+
+
+
+
+## Examples
+
+| Status | Entity Type | Reference Type | Fide ID Prefix |
+| :--- | :--- | :--- | :--- |
+| Valid | `SymmetricProperty` | `NetworkResource` | `did:fide:0x0220` |
+| Invalid | `SymmetricProperty` | `Statement` | `did:fide:0x0200` |
+

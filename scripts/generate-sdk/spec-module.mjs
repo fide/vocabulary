@@ -16,10 +16,45 @@ function ensureString(value, path) {
   return value;
 }
 
+function normalizeStandard(standard, path) {
+  if (typeof standard === "string") {
+    return {
+      term: ensureString(standard, `${path}.term`),
+      fit: null,
+    };
+  }
+  if (!standard || typeof standard !== "object") {
+    throw new Error(`Invalid standard at ${path}`);
+  }
+  return {
+    term: ensureString(standard.term, `${path}.term`),
+    fit: ensureString(standard.fit, `${path}.fit`),
+  };
+}
+
 function normalizeSpec(raw) {
   const namespaceUrl = ensureString(raw.namespaceUrl, "namespaceUrl");
   const specVersion = ensureString(raw.specVersion, "specVersion");
   const specDate = ensureString(raw.specDate, "specDate");
+
+  const enums = raw.enums && typeof raw.enums === "object"
+    ? Object.fromEntries(
+        Object.entries(raw.enums).map(([name, value]) => {
+          if (!value || typeof value !== "object") throw new Error(`Invalid enum entry for ${name}`);
+          const values = Array.isArray(value.enum)
+            ? value.enum.map((item, idx) => ensureString(item, `${name}.enum[${idx}]`))
+            : [];
+          return [
+            ensureString(name, "enums key"),
+            {
+              type: ensureString(value.type, `${name}.type`),
+              enum: values,
+              description: ensureString(value.description, `${name}.description`),
+            },
+          ];
+        }),
+      )
+    : {};
 
   if (!raw.entityTypes || typeof raw.entityTypes !== "object") {
     throw new Error("Invalid entityTypes object");
@@ -28,20 +63,20 @@ function normalizeSpec(raw) {
   const entities = Object.entries(raw.entityTypes).map(([name, value]) => {
     if (!value || typeof value !== "object") throw new Error(`Invalid entity type entry for ${name}`);
     const standards = Array.isArray(value.standards)
-      ? value.standards.map((standard, idx) => ensureString(standard, `${name}.standards[${idx}]`))
+      ? value.standards.map((standard, idx) => normalizeStandard(standard, `${name}.standards[${idx}]`))
       : [];
     return {
       name: ensureString(name, "entityTypes key"),
       code: ensureString(value.code, `${name}.code`),
       layer: ensureString(value.layer, `${name}.layer`),
       standards,
-      standardFit: ensureString(value.standardFit, `${name}.standardFit`),
+      standardFit: standards[0]?.fit ?? null,
       description: ensureString(value.description, `${name}.description`),
       litmus: ensureString(value.litmus, `${name}.litmus`),
     };
   });
 
-  return { namespaceUrl, specVersion, specDate, entities };
+  return { namespaceUrl, specVersion, specDate, enums, entities };
 }
 
 function buildSpecModule(spec) {
@@ -50,10 +85,20 @@ function buildSpecModule(spec) {
       (entity) => `    ${entity.name}: {
       code: ${JSON.stringify(entity.code)},
       layer: ${JSON.stringify(entity.layer)},
-      standards: ${JSON.stringify(entity.standards)} as const,
+      standards: ${JSON.stringify(entity.standards.map((standard) => standard.term))} as const,
       standardFit: ${JSON.stringify(entity.standardFit)},
       description: ${JSON.stringify(entity.description)},
       litmus: ${JSON.stringify(entity.litmus)},
+    },`,
+    )
+    .join("\n");
+
+  const enumBlocks = Object.entries(spec.enums)
+    .map(
+      ([name, value]) => `    ${name}: {
+      type: ${JSON.stringify(value.type)},
+      enum: ${JSON.stringify(value.enum)} as const,
+      description: ${JSON.stringify(value.description)},
     },`,
     )
     .join("\n");
@@ -66,14 +111,20 @@ export const FIDE_VOCABULARY = {
   namespaceUrl: ${JSON.stringify(spec.namespaceUrl)},
   specVersion: ${JSON.stringify(spec.specVersion)},
   specDate: ${JSON.stringify(spec.specDate)},
+  enums: {
+${enumBlocks}
+  },
   entityTypes: {
 ${entityBlocks}
   },
 } as const;
 
 export const FIDE_ENTITY_TYPES = FIDE_VOCABULARY.entityTypes;
+export const FIDE_ENUMS = FIDE_VOCABULARY.enums;
 export type FideEntityTypeName = keyof typeof FIDE_ENTITY_TYPES;
-export type FideStandardFit = (typeof FIDE_ENTITY_TYPES)[FideEntityTypeName]["standardFit"];
+export type FideEnumName = keyof typeof FIDE_ENUMS;
+export type FideEnumSpec = (typeof FIDE_ENUMS)[FideEnumName];
+export type FideStandardFit = (typeof FIDE_ENUMS)["FitValue"]["enum"][number];
 export type FideEntityTypeSpec = (typeof FIDE_ENTITY_TYPES)[FideEntityTypeName];
 export type FideEntityTypeCode = FideEntityTypeSpec["code"];
 

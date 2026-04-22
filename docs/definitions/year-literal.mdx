@@ -1,0 +1,49 @@
+---
+title: "YearLiteral"
+description: "A calendar year in canonical `YYYY` form."
+full: true
+---
+
+## Definition
+
+A calendar year in canonical `YYYY` form.
+
+- **Boundaries:** Not a year-month or full date.
+- **Hex Code:** `b3`
+- **Standard Alignment:** [`rdf:Literal`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Literal) (Broad) + [`xsd:gYear`](https://www.w3.org/2001/XMLSchema#gYear) (Exact)
+
+
+---
+
+## Fide ID Rules
+
+These entity-specific constraints apply when YearLiteral is used in [Fide ID](/fide-id).
+
+### As Entity Type
+
+- MUST use [Reference Type](/fide-id/specification/syntax#reference-type) [`YearLiteral`](/vocabulary/definitions/year-literal) or [`NetworkResource`](/vocabulary/definitions/network-resource).
+
+
+
+
+### As Reference Type
+
+- [Reference](/fide-id/specification/syntax#reference-identifier) MUST use canonical `YYYY` format without timezone ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#gYear)).
+
+<details>
+<summary>Year references MUST use a four-digit year value.</summary>
+
+- Valid [Reference](/fide-id/specification/syntax#reference-identifier): `2026`
+- Invalid [Reference](/fide-id/specification/syntax#reference-identifier): `26`
+- Invalid [Reference](/fide-id/specification/syntax#reference-identifier): `2026Z`
+- Invalid [Reference](/fide-id/specification/syntax#reference-identifier): `2026-03`
+</details>
+
+
+## Examples
+
+| Status | Entity Type | Reference Type | Fide ID Prefix |
+| :--- | :--- | :--- | :--- |
+| Valid | `YearLiteral` | `YearLiteral` | `did:fide:0xb3b3` |
+| Invalid | `YearLiteral` | `TextLiteral` | `did:fide:0xb3a0` |
+

@@ -6,14 +6,37 @@ export const FIDE_VOCABULARY = {
   namespaceUrl: "https://fide.work/vocabulary/v0/",
   specVersion: "0",
   specDate: "2026-03-28",
+  enums: {
+    FitValue: {
+      type: "string",
+      enum: ["Exact","Close","Broad"] as const,
+      description: "Describes the semantic fit between a Fide entity type and an external standard.",
+    },
+  },
   entityTypes: {
     Statement: {
       code: "00",
       layer: "Graph Structure",
       standards: ["rdf:Statement"] as const,
       standardFit: "Exact",
-      description: "A record of a Subject-Predicate-Object assertion.",
+      description: "A record of a subject-property-object assertion.",
       litmus: "Not a verified fact; verification is application-level. Not what it represents.",
+    },
+    DirectionalProperty: {
+      code: "01",
+      layer: "Graph Structure",
+      standards: ["rdf:Property"] as const,
+      standardFit: "Close",
+      description: "A property where the ordered pair (subject, object) is semantically significant.",
+      litmus: "Use when reversing subject and object changes the meaning and produces a different Statement identity.",
+    },
+    SymmetricProperty: {
+      code: "02",
+      layer: "Graph Structure",
+      standards: ["rdf:Property","owl:SymmetricProperty"] as const,
+      standardFit: "Close",
+      description: "A property where subject-object order is semantically interchangeable. Reversing subject and object preserves meaning and MUST resolve to the same canonical Statement identity.",
+      litmus: "Use when `A -> p -> B` means the same thing as `B -> p -> A`, such as identity or mutual-peer relations.",
     },
     Person: {
       code: "10",
@@ -115,7 +138,7 @@ export const FIDE_VOCABULARY = {
       code: "a0",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:string"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A plain text sequence of characters.",
       litmus: "Not a Concept.",
     },
@@ -123,7 +146,7 @@ export const FIDE_VOCABULARY = {
       code: "a1",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:integer"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A whole number.",
       litmus: "Not a decimal or string.",
     },
@@ -131,7 +154,7 @@ export const FIDE_VOCABULARY = {
       code: "a2",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:decimal"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A decimal or floating-point number.",
       litmus: "Not an integer.",
     },
@@ -139,7 +162,7 @@ export const FIDE_VOCABULARY = {
       code: "a3",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:boolean"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A true or false value.",
       litmus: "Not a number or string.",
     },
@@ -147,7 +170,7 @@ export const FIDE_VOCABULARY = {
       code: "b1",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:date"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A calendar date in canonical `YYYY-MM-DD` form.",
       litmus: "Not a datetime or time.",
     },
@@ -155,7 +178,7 @@ export const FIDE_VOCABULARY = {
       code: "b2",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:gYearMonth"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A calendar year and month in canonical `YYYY-MM` form.",
       litmus: "Not a full date or year alone.",
     },
@@ -163,7 +186,7 @@ export const FIDE_VOCABULARY = {
       code: "b3",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:gYear"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A calendar year in canonical `YYYY` form.",
       litmus: "Not a year-month or full date.",
     },
@@ -171,7 +194,7 @@ export const FIDE_VOCABULARY = {
       code: "b4",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:time"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A time of day (formatted according to ISO 8601, represented in UTC).",
       litmus: "Not a date or datetime.",
     },
@@ -179,7 +202,7 @@ export const FIDE_VOCABULARY = {
       code: "b0",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:dateTime"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form.",
       litmus: "Not a date or time alone.",
     },
@@ -187,7 +210,7 @@ export const FIDE_VOCABULARY = {
       code: "b5",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:duration"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A calculated amount of elapsed time (ISO 8601 duration format).",
       litmus: "Not a datetime.",
     },
@@ -195,7 +218,7 @@ export const FIDE_VOCABULARY = {
       code: "c0",
       layer: "Literals",
       standards: ["rdf:Literal","xsd:anyURI"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A formalized Uniform Resource Identifier string.",
       litmus: "Not plain text.",
     },
@@ -203,7 +226,7 @@ export const FIDE_VOCABULARY = {
       code: "c1",
       layer: "Literals",
       standards: ["rdf:Literal","rdf:JSON"] as const,
-      standardFit: "Exact",
+      standardFit: "Broad",
       description: "A structured JSON object represented in canonical string form.",
       litmus: "Not a string.",
     },
@@ -211,8 +234,11 @@ export const FIDE_VOCABULARY = {
 } as const;
 
 export const FIDE_ENTITY_TYPES = FIDE_VOCABULARY.entityTypes;
+export const FIDE_ENUMS = FIDE_VOCABULARY.enums;
 export type FideEntityTypeName = keyof typeof FIDE_ENTITY_TYPES;
-export type FideStandardFit = (typeof FIDE_ENTITY_TYPES)[FideEntityTypeName]["standardFit"];
+export type FideEnumName = keyof typeof FIDE_ENUMS;
+export type FideEnumSpec = (typeof FIDE_ENUMS)[FideEnumName];
+export type FideStandardFit = (typeof FIDE_ENUMS)["FitValue"]["enum"][number];
 export type FideEntityTypeSpec = (typeof FIDE_ENTITY_TYPES)[FideEntityTypeName];
 export type FideEntityTypeCode = FideEntityTypeSpec["code"];
 

@@ -1,16 +1,16 @@
 ---
 title: "DateTimeLiteral"
-description: "A specific point in time (ISO 8601 formatted, UTC normalized)."
+description: "A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form."
 full: true
 ---
 
 ## Definition
 
-A specific point in time (ISO 8601 formatted, UTC normalized).
+A specific point in time in canonical UTC `YYYY-MM-DDTHH:MM:SSZ` form.
 
 - **Boundaries:** Not a date or time alone.
-- **Hex Code:** `a6`
-- **Standard Alignment:** [`rdf:Literal`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Literal) + [`xsd:dateTime`](https://www.w3.org/2001/XMLSchema#dateTime) (Exact fit)
+- **Hex Code:** `b0`
+- **Standard Alignment:** [`rdf:Literal`](https://www.w3.org/1999/02/22-rdf-syntax-ns#Literal) (Broad) + [`xsd:dateTime`](https://www.w3.org/2001/XMLSchema#dateTime) (Exact)
 
 
 ---
@@ -28,7 +28,7 @@ These entity-specific constraints apply when DateTimeLiteral is used in [Fide ID
 
 ### As Reference Type
 
-- [Reference](/fide-id/specification/syntax#reference-identifier) MUST use UTC datetime format with a trailing `Z` ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#dateTime)).
+- [Reference](/fide-id/specification/syntax#reference-identifier) MUST use canonical UTC datetime format with a trailing `Z` ([XML Schema 1.1 Part 2: Datatypes](https://www.w3.org/TR/xmlschema11-2/#dateTime)).
 
 <details>
 <summary>Datetime references MUST use `YYYY-MM-DDTHH:MM:SSZ` format.</summary>
@@ -43,6 +43,6 @@ These entity-specific constraints apply when DateTimeLiteral is used in [Fide ID
 
 | Status | Entity Type | Reference Type | Fide ID Prefix |
 | :--- | :--- | :--- | :--- |
-| Valid | `DateTimeLiteral` | `DateTimeLiteral` | `did:fide:0xa6a6` |
-| Invalid | `DateTimeLiteral` | `TextLiteral` | `did:fide:0xa6a0` |
+| Valid | `DateTimeLiteral` | `DateTimeLiteral` | `did:fide:0xb0b0` |
+| Invalid | `DateTimeLiteral` | `TextLiteral` | `did:fide:0xb0a0` |
 

@@ -45,6 +45,22 @@ function ensureString(value, path) {
   return value;
 }
 
+function normalizeStandard(standard, path) {
+  if (typeof standard === 'string') {
+    return {
+      term: ensureString(standard, `${path}.term`),
+      fit: 'Exact',
+    };
+  }
+  if (!standard || typeof standard !== 'object') {
+    throw new Error(`Invalid standard at ${path}`);
+  }
+  return {
+    term: ensureString(standard.term, `${path}.term`),
+    fit: ensureString(standard.fit, `${path}.fit`),
+  };
+}
+
 function toSlug(name) {
   return name
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
@@ -166,13 +182,12 @@ function normalizeSpec(raw) {
 
   const entities = Object.entries(raw.entityTypes).map(([name, value]) => {
     if (!value || typeof value !== 'object') throw new Error(`Invalid entity type entry for ${name}`);
-    const standards = Array.isArray(value.standards) ? value.standards.map((standard, idx) => ensureString(standard, `${name}.standards[${idx}]`)) : [];
+    const standards = Array.isArray(value.standards) ? value.standards.map((standard, idx) => normalizeStandard(standard, `${name}.standards[${idx}]`)) : [];
     return {
       name: ensureString(name, 'entityTypes key'),
       code: ensureString(value.code, `${name}.code`),
       layer: ensureString(value.layer, `${name}.layer`),
       standards,
-      standardFit: ensureString(value.standardFit, `${name}.standardFit`),
       description: ensureString(value.description, `${name}.description`),
       litmus: ensureString(value.litmus, `${name}.litmus`),
       fideIdRules: value.fideIdRules && typeof value.fideIdRules === 'object' ? value.fideIdRules : null,
@@ -197,13 +212,13 @@ function expandCurie(curie) {
   return `${base}${suffix}`;
 }
 
-function renderStandardAlignment(standards, standardFit) {
+function renderStandardAlignment(standards) {
   const rendered = standards.map((standard) => {
-    const href = expandCurie(standard);
-    return href ? `[
-\`${standard}\`](${href})`.replace('\n', '') : `\`${standard}\``;
+    const href = expandCurie(standard.term);
+    const term = href ? `[\`${standard.term}\`](${href})` : `\`${standard.term}\``;
+    return `${term} (${standard.fit})`;
   }).join(' + ');
-  return `${rendered} (${standardFit} fit)`;
+  return rendered;
 }
 
 function buildSpecificationIndex(spec) {
@@ -305,7 +320,7 @@ ${asReferenceTypeSection}`
 
   const metadataLines = [
     `- **Hex Code:** \`${entity.code}\``,
-    entity.standards.length > 0 ? `- **Standard Alignment:** ${renderStandardAlignment(entity.standards, entity.standardFit)}` : null,
+    entity.standards.length > 0 ? `- **Standard Alignment:** ${renderStandardAlignment(entity.standards)}` : null,
   ].filter(Boolean).join('\n');
 
   return `---
